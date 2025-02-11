@@ -26,33 +26,32 @@ const range = (start: number, stop: number, step: number) =>
 const response = responses[0];
 
 // atributos da resposta relacionados ao fuso horário e à localização.
-const utcOffsetSeconds = response.utcOffsetSeconds(); // Deslocamento do fuso horário em segundos.
-const timezone = response.timezone(); // Fuso horário.
-const timezoneAbbreviation = response.timezoneAbbreviation(); // Abreviação do fuso horário.
-const latitude = response.latitude(); // Latitude da localização.
-const longitude = response.longitude(); // Longitude da localização.
+const utcOffsetSeconds = response.utcOffsetSeconds();
+const timezone = response.timezone();
+const timezoneAbbreviation = response.timezoneAbbreviation();
+const latitude = response.latitude();
+const longitude = response.longitude();
 
 // dados horários e diários da resposta.
-const hourly = response.hourly()!; // Dados horários de previsão.
-const daily = response.daily()!; // Dados diários de previsão.
+const hourly = response.hourly()!;
+const daily = response.daily()!;
 
-// Atenção: a ordem das variáveis meteorológicas na URL da consulta e os índices abaixo devem corresponder!
-// Criando a estrutura para armazenar os dados processados da previsão do tempo.
+// estrutura para armazenar os dados processados da previsão do tempo.
 const weatherData = {
   hourly: {
-    // Processando os horários, ajustando os valores de tempo de acordo com o deslocamento do fuso horário.
+    // processando os horários, ajustando os valores de tempo de acordo com o deslocamento do fuso horário.
     time: range(
-      Number(hourly.time()), // Convertendo o tempo inicial para número.
-      Number(hourly.timeEnd()), // Convertendo o tempo final para número.
-      hourly.interval() // Intervalo de tempo (em horas ou minutos).
-    ).map((t) => new Date((t + utcOffsetSeconds) * 1000)), // Convertendo o tempo para formato Date.
+      Number(hourly.time()),
+      Number(hourly.timeEnd()),
+      hourly.interval()
+    ).map((t) => new Date((t + utcOffsetSeconds) * 1000)),
 
-    // Acessando os valores de temperatura horários e armazenando-os.
-    temperature2m: hourly.variables(0)!.valuesArray()!, // Temperaturas a 2 metros de altura.
+    // os valores de temperatura horários e armazenando-os.
+    temperature2m: hourly.variables(0)!.valuesArray()!, // temperaturas a 2 metros de altura.
   },
 
   daily: {
-    // Processando os tempos diários, ajustando novamente os valores de tempo.
+    // processando os tempos diários, ajustando novamente os valores de tempo.
     time: range(
       Number(daily.time()),
       Number(daily.timeEnd()),
